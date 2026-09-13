@@ -35,7 +35,7 @@ class MapTree::MapTreeImpl {
 
  private:
   double knn_rad_;
-  Eigen::Matrix3Xd const& points_;
+  Eigen::Matrix3Xd points_;  // owned copy: the Python binding passes a temporary
   cilantro::KDTree3d<> kd_tree_;
   std::vector<std::vector<Eigen::Index>> map_neighbours_;
 

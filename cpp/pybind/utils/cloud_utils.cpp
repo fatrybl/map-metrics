@@ -20,6 +20,7 @@
 #include "cloud_utils.h"
 
 #include <pybind11/eigen.h>
+#include <pybind11/stl.h>  // std::vector<Eigen::Matrix3Xd> arguments and returns
 
 #include "map_metrics/utils/cloud_utils.h"
 

@@ -19,6 +19,9 @@
 //
 #include "metrics.h"
 
+#include <pybind11/eigen.h>  // the MOM default argument is a std::vector<Eigen::Matrix3Xd>
+#include <pybind11/stl.h>
+
 #include <map_metrics/metrics.h>
 
 namespace map_metrics {
