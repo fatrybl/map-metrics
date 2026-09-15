@@ -20,6 +20,7 @@
 #ifndef MAP_METRICS_MAP_TREE_H
 #define MAP_METRICS_MAP_TREE_H
 #include <memory>
+#include <vector>
 
 #include <Eigen/Core>
 
@@ -36,7 +37,11 @@ class MapTree {
 
   MapTree& operator=(MapTree&& op) noexcept;
 
-  std::vector<std::vector<Eigen::Index>> const& getMapNeighbours() const;
+  Eigen::Index size() const;
+
+  // fork: the neighbourhood of a map point is searched on demand; storing one list per point took tens of GB on
+  // dense maps
+  std::vector<Eigen::Index> getMapPointNeighbours(Eigen::Index point_index) const;
 
   std::vector<std::vector<Eigen::Index>> getNeighboursByComponent(Eigen::Matrix3Xd const& point_component) const;
 

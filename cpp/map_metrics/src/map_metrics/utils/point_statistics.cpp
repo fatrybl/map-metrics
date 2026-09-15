@@ -19,8 +19,8 @@
 //
 #include "point_statistics.h"
 
-#include <cassert>
 #include <cmath>
+#include <limits>
 
 #include <Eigen/Eigenvalues>
 
@@ -34,7 +34,11 @@ double computePointsVariance(Eigen::Matrix3Xd const& points) {
 
 double computePointsEntropy(Eigen::Matrix3Xd const& points) {
   double det = (2.0 * M_PI * M_E * findCovariance(points)).determinant();
-  assert(det > 0 && "Determinant of covariance matrix has to be non-negative");
+  // fork: a degenerate neighbourhood has no entropy; NaN makes the estimator skip it, as the Python map-metrics does
+  // (the assert that stood here is compiled out in release builds, where log(det <= 0) put NaN or -inf into the mean)
+  if (det <= 0) {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
   return 0.5 * std::log(det);
 }
 }  // namespace map_metrics

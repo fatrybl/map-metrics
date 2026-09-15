@@ -27,7 +27,9 @@ class MapTree::MapTreeImpl {
  public:
   MapTreeImpl(Eigen::Matrix3Xd const& points, double knn_rad);
 
-  std::vector<std::vector<Eigen::Index>> const& getMapNeighbours() const;
+  Eigen::Index size() const;
+
+  std::vector<Eigen::Index> getMapPointNeighbours(Eigen::Index point_index) const;
 
   std::vector<std::vector<Eigen::Index>> getNeighboursByComponent(Eigen::Matrix3Xd const& point_component) const;
 
@@ -37,7 +39,6 @@ class MapTree::MapTreeImpl {
   double knn_rad_;
   Eigen::Matrix3Xd points_;  // owned copy: the Python binding passes a temporary
   cilantro::KDTree3d<> kd_tree_;
-  std::vector<std::vector<Eigen::Index>> map_neighbours_;
 
   std::vector<Eigen::Index> getRadiusSearchIndices(Eigen::Vector3d const& query) const;
 };
@@ -50,7 +51,11 @@ MapTree::MapTree(MapTree&& op) noexcept = default;
 
 MapTree& MapTree::operator=(MapTree&& op) noexcept = default;
 
-std::vector<std::vector<Eigen::Index>> const& MapTree::getMapNeighbours() const { return impl_->getMapNeighbours(); }
+Eigen::Index MapTree::size() const { return impl_->size(); }
+
+std::vector<Eigen::Index> MapTree::getMapPointNeighbours(Eigen::Index point_index) const {
+  return impl_->getMapPointNeighbours(point_index);
+}
 
 std::vector<std::vector<Eigen::Index>> MapTree::getNeighboursByComponent(
     Eigen::Matrix3Xd const& point_component) const {
@@ -62,9 +67,13 @@ Eigen::Matrix3Xd MapTree::getMapPoints(std::vector<Eigen::Index> const& point_in
 }
 
 MapTree::MapTreeImpl::MapTreeImpl(Eigen::Matrix3Xd const& points, double knn_rad)
-    : knn_rad_(knn_rad), points_(points), kd_tree_(points_), map_neighbours_(getNeighboursByComponent(points)) {}
+    : knn_rad_(knn_rad), points_(points), kd_tree_(points_) {}
 
-std::vector<std::vector<Eigen::Index>> const& MapTree::MapTreeImpl::getMapNeighbours() const { return map_neighbours_; }
+Eigen::Index MapTree::MapTreeImpl::size() const { return points_.cols(); }
+
+std::vector<Eigen::Index> MapTree::MapTreeImpl::getMapPointNeighbours(Eigen::Index point_index) const {
+  return getRadiusSearchIndices(points_.col(point_index));
+}
 
 std::vector<std::vector<Eigen::Index>> MapTree::MapTreeImpl::getNeighboursByComponent(
     Eigen::Matrix3Xd const& point_component) const {

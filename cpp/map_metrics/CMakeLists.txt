@@ -26,6 +26,8 @@ endif()
 
 find_package(Eigen3 REQUIRED)
 find_package(cilantro REQUIRED)
+find_package(OpenMP REQUIRED)  # fork: per-point neighbourhood statistics run in parallel
+target_link_libraries(${TARGET_NAME} PUBLIC OpenMP::OpenMP_CXX)
 
 find_package(Boost 1.55.0 REQUIRED COMPONENTS graph)
 if(Boost_FOUND)

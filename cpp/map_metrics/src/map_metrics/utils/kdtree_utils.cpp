@@ -26,19 +26,30 @@
 
 namespace map_metrics {
 std::vector<Eigen::Index> findPlanarPoints(MapTree const& map_tree) {
-  std::vector<Eigen::Index> normals_indices;
+  // fork: neighbourhoods on demand and in parallel; the planar points are collected in point order afterwards
+  const Eigen::Index point_count = map_tree.size();
+  std::vector<char> is_planar(point_count, 0);
 
-  for (Eigen::Index i = 0; i < map_tree.getMapNeighbours().size(); ++i) {
+  #pragma omp parallel for schedule(dynamic, 256)
+  for (Eigen::Index i = 0; i < point_count; ++i) {
     int32_t component_inner_min_knn = 3;
-    bool enough_neighbours = map_tree.getMapNeighbours()[i].size() > component_inner_min_knn;
+    const std::vector<Eigen::Index> neighbour_list = map_tree.getMapPointNeighbours(i);
+    bool enough_neighbours = neighbour_list.size() > component_inner_min_knn;
     if (enough_neighbours) {
-      Eigen::Matrix3d cov_matrix = findCovariance(map_tree.getMapPoints(map_tree.getMapNeighbours()[i]));
+      Eigen::Matrix3d cov_matrix = findCovariance(map_tree.getMapPoints(neighbour_list));
       Eigen::VectorXd eigenvalues = cov_matrix.eigenvalues().real();
       std::sort(eigenvalues.begin(), eigenvalues.end());
       // TODO (achains): Better planarity check?
       if (100 * eigenvalues[0] < eigenvalues[1]) {
-        normals_indices.push_back(i);
+        is_planar[i] = 1;
       }
+    }
+  }
+
+  std::vector<Eigen::Index> normals_indices;
+  for (Eigen::Index i = 0; i < point_count; ++i) {
+    if (is_planar[i]) {
+      normals_indices.push_back(i);
     }
   }
 
