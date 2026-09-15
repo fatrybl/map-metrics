@@ -16,7 +16,7 @@ import numpy as np
 import open3d as o3d
 
 from typing import Optional, Type, Any, List, Callable
-from nptyping import NDArray
+from numpy.typing import NDArray
 
 from map_metrics.utils.orthogonal import extract_orthogonal_subsets
 from map_metrics.config import BaseConfig, LidarConfig
@@ -25,7 +25,7 @@ __all__ = ["aggregate_map", "mme", "mpv", "mom"]
 
 
 def aggregate_map(
-    pcs: List[o3d.geometry.PointCloud], ts: List[NDArray[(4, 4), np.float64]]
+    pcs: List[o3d.geometry.PointCloud], ts: List[NDArray[np.float64]]
 ) -> o3d.geometry.PointCloud:
     """
     Build a map from point clouds with their poses
@@ -58,7 +58,7 @@ def aggregate_map(
     return pc_map
 
 
-def _plane_variance(points: NDArray[(Any, 3), np.float64]) -> float:
+def _plane_variance(points: NDArray[np.float64]) -> float:
     """
     Compute plane variance of given points
 
@@ -77,7 +77,7 @@ def _plane_variance(points: NDArray[(Any, 3), np.float64]) -> float:
     return min(eigenvalues)
 
 
-def _entropy(points: NDArray[(Any, 3), np.float64]) -> Optional[float]:
+def _entropy(points: NDArray[np.float64]) -> Optional[float]:
     """
     Compute entropy of given points
 
@@ -101,7 +101,7 @@ def _entropy(points: NDArray[(Any, 3), np.float64]) -> Optional[float]:
 
 def _mean_map_metric(
     pcs: List[o3d.geometry.PointCloud],
-    ts: List[NDArray[(4, 4), np.float64]],
+    ts: List[NDArray[np.float64]],
     config: Type[BaseConfig] = LidarConfig,
     alg: Callable = _plane_variance,
 ) -> float:
@@ -141,9 +141,9 @@ def _mean_map_metric(
 
 def _orth_mpv(
     pcs: List[o3d.geometry.PointCloud],
-    ts: List[NDArray[(4, 4), np.float64]],
+    ts: List[NDArray[np.float64]],
     config: Type[BaseConfig] = LidarConfig,
-    orth_list: List[o3d.geometry.PointCloud] = None,
+    orth_list: List[o3d.geometry.PointCloud] | None = None,
 ):
     """
 
@@ -190,7 +190,7 @@ def _orth_mpv(
 
 def mme(
     pcs: List[o3d.geometry.PointCloud],
-    ts: List[NDArray[(4, 4), np.float64]],
+    ts: List[NDArray[np.float64]],
     config: Type[BaseConfig] = LidarConfig,
 ) -> float:
     """
@@ -216,7 +216,7 @@ def mme(
 
 def mpv(
     pcs: List[o3d.geometry.PointCloud],
-    ts: List[NDArray[(4, 4), np.float64]],
+    ts: List[NDArray[np.float64]],
     config: Type[BaseConfig] = LidarConfig,
 ) -> float:
     """
@@ -242,8 +242,8 @@ def mpv(
 
 def mom(
     pcs: List[o3d.geometry.PointCloud],
-    ts: List[NDArray[(4, 4), np.float64]],
-    orth_list: List[o3d.geometry.PointCloud] = None,
+    ts: List[NDArray[np.float64]],
+    orth_list: List[o3d.geometry.PointCloud] | None = None,
     config: Type[BaseConfig] = LidarConfig,
 ):
     """

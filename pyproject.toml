@@ -7,18 +7,22 @@ license = "Apache License 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.6.2"
-networkx = "^2.5.1"
-nptyping = "^1.4.4"
-numpy = "^1.19.5"
-open3d = "^0.14.1"
-scikit-learn = "^0.24.2"
+python = "^3.11"
+networkx = "*"
+nptyping = "*"
+numpy = "*"
+open3d = "*"
+scikit-learn = "*"
 
-[tool.poetry.dev-dependencies]
-black = "^22.1.0"
-pytest = "^6.2.5"
-myst-nb = {version = "^0.13.2", python = "^3.9"}
+[tool.poetry.group.dev.dependencies]
+types-networkx = "^3.4.2.20241115"
+black = "*"
+pytest = "*"
+myst-nb = {version = "*", python = "^3.11"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+ignore_missing_imports = false

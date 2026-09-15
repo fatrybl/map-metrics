@@ -16,7 +16,7 @@ import networkx as nx
 import open3d as o3d
 
 from typing import Type, List
-from nptyping import NDArray
+from numpy.typing import NDArray
 
 from map_metrics.config import BaseConfig, LidarConfig
 from sklearn.cluster import AgglomerativeClustering
@@ -148,7 +148,7 @@ def extract_orthogonal_subsets(pc, config: Type[BaseConfig] = LidarConfig, eps=1
 
 
 def read_orthogonal_subset(
-    orth_subset_name: Path, orth_pose_name: Path, ts: List[NDArray[(4, 4), np.float64]]
+    orth_subset_name: Path, orth_pose_name: Path, ts: list[NDArray[np.float64]]
 ):
     """Read and aggregate an orthogonal subset
 
@@ -158,8 +158,8 @@ def read_orthogonal_subset(
         Orthogonal subset data
     orth_pose_name: Path
         Pose of orthogonal subset in the map
-    ts: List[NDArray[(4, 4), np.float64]]
-        Transformation matrices list (i.e., Point Cloud poses)
+    ts: List[NDArray[np.float64]]
+        Transformation (4x4) matrices list (i.e., Point Cloud poses)
 
     Returns
     -------
